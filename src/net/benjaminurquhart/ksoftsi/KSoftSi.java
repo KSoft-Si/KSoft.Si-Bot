@@ -2,8 +2,10 @@ package net.benjaminurquhart.ksoftsi;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Set;
 
 import org.json.JSONObject;
+import org.reflections.Reflections;
 
 import net.benjaminurquhart.ksoftsi.commands.*;
 import net.benjaminurquhart.ksoftsi.util.CommandHandler;
@@ -37,10 +39,17 @@ public class KSoftSi {
 	public static void main(String[] args) throws Exception{
 		KSoftSi self = new KSoftSi();
 		CommandHandler cmdHandler = new CommandHandler(self);
-		cmdHandler.registerCommand(new Meme());
-		cmdHandler.registerCommand(new Lyrics());
-		cmdHandler.registerCommand(new WikiHow());
-		cmdHandler.registerCommand(new SetAvatar());
-		new JDABuilder(token).addEventListener(cmdHandler).setGame(Game.watching("things")).build();
+		Reflections reflections = new Reflections("net.benjaminurquhart.ksoftsi.commands");
+        Set<Class<? extends Command>> commandClasses = reflections.getSubTypesOf(Command.class);
+        for (Class<? extends Command> i : commandClasses) {
+            try {
+                Command cls = i.getDeclaredConstructor().newInstance();
+                cmdHandler.registerCommand(cls);
+            } 
+            catch (Exception e) {
+            	e.printStackTrace();
+            }
+        }
+		new JDABuilder(token).addEventListener(cmdHandler).setGame(Game.watching("people get the prefix wrong (it's 'ksoft')")).build();
 	}
 }
