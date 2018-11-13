@@ -13,6 +13,9 @@ public abstract class Command {
 		this(null);
 	}
 	public Command(String name, String... args){
+		if(name == null){
+			name = this.getClass().getSimpleName().toLowerCase();
+		}
 		this.name = name;
 		this.args = args;
 	}

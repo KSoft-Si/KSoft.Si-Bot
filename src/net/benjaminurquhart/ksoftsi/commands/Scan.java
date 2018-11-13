@@ -20,12 +20,12 @@ public class Scan extends Command{
 	public void handle(GuildMessageReceivedEvent event, KSoftSi self) {
 		TextChannel channel = event.getChannel();
 		KSoftAPI api = self.getAPI();
-		List<String> ids = new ArrayList<>();
+		List<Long> ids = new ArrayList<>();
 		for(Member member : event.getGuild().getMembers()){
 			if(member.getUser().isBot()){
 				continue;
 			}
-			ids.add(member.getUser().getId());
+			ids.add(member.getUser().getIdLong());
 		}
 		try{
 			List<Ban> bans = api.getBulkBanChecker().addIds(ids).execute();
