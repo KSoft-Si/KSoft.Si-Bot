@@ -1,5 +1,7 @@
 package net.benjaminurquhart.ksoftsi.commands;
 
+import java.util.Arrays;
+
 import net.benjaminurquhart.ksoftsi.KSoftSi;
 import net.benjaminurquhart.ksoftsi.util.EmbedUtils;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -10,7 +12,7 @@ import net.explodingbush.ksoftapi.entities.TaggedImage;
 import net.explodingbush.ksoftapi.enums.ImageTag;
 
 public class Image extends Command{
-
+	
 	public Image(){
 		super("image", "type");
 	}
@@ -24,11 +26,18 @@ public class Image extends Command{
 			return;
 		}
 		try{
-			ImageTag tag = ImageTag.valueOf(args[2]);
+			ImageTag tag = ImageTag.valueOf(args[2].toUpperCase());
+			if(!channel.isNSFW() && tag.isNSFW()){
+				channel.sendMessage("That tag cannot be used outside of an NSFW channel!").queue();
+				return;
+			}
 			TaggedImage image = api.getTaggedImage(tag).allowNsfw(channel.isNSFW()).execute();
-			EmbedBuilder eb = EmbedUtils.getEmbed(event.getGuild(), image.getUrl(), tag.toString(), event.getAuthor());
-			eb.setTitle("Here's your random " + tag);
+			EmbedBuilder eb = EmbedUtils.getEmbed(event.getGuild(), image.getUrl(), tag.toString().toLowerCase(), event.getAuthor());
+			eb.setTitle("Here's your random " + tag.toString().toLowerCase());
 			channel.sendMessage(eb.build()).queue();
+		}
+		catch(IllegalArgumentException e){
+			channel.sendMessage("Unknown tag `" + args[2] + "`.\nValid tags: " + (Arrays.asList(ImageTag.values()).toString().replace("[", "").replace("]", "").toLowerCase())).queue();
 		}
 		catch(Exception e){
 			channel.sendMessage(e.toString()).queue();
