@@ -14,7 +14,7 @@ import net.explodingbush.ksoftapi.entities.Lyric;
 public class Lyrics extends Command {
 
 	public Lyrics() {
-		super("lyrics");
+		super("lyrics", "query");
 	}
 
 	@Override

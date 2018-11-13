@@ -7,6 +7,9 @@ public class Usage {
 
 	public static String getUsage(Command command, String... args){
 		String out = "Usage: " + KSoftSi.prefix + command.getName() + " ";
+		if(args.length == 0){
+			return out;
+		}
 		for(int i = 0; i < args.length; i++){
 			out += "<%s> ";
 		}

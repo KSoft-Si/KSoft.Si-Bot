@@ -1,6 +1,9 @@
 package net.benjaminurquhart.ksoftsi.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
 
 import net.benjaminurquhart.ksoftsi.KSoftSi;
 import net.benjaminurquhart.ksoftsi.commands.Command;
@@ -20,7 +23,14 @@ public class CommandHandler extends ListenerAdapter{
 	public void registerCommand(Command command){
 		commands.put(command.getName(), command);
 	}
-	protected GuildMessageReceivedEvent getEvent(){
+	public List<Command> getRegisteredCommands(){
+		List<Command> out = new ArrayList<>();
+		for(Entry<String, Command> entry : commands.entrySet()){
+			out.add(entry.getValue());
+		}
+		return out;
+	}
+ 	protected GuildMessageReceivedEvent getEvent(){
 		return event;
 	}
 	@Override

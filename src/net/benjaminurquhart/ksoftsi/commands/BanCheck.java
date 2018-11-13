@@ -9,7 +9,7 @@ import net.explodingbush.ksoftapi.KSoftAPI;
 public class BanCheck extends Command{
 
 	public BanCheck(){
-		super("check");
+		super("check", "user id");
 	}
 	@Override
 	public void handle(GuildMessageReceivedEvent event, KSoftSi self) {
