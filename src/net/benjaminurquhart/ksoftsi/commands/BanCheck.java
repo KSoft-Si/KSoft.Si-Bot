@@ -27,4 +27,8 @@ public class BanCheck extends Command{
 			channel.sendMessage(e.toString()).queue();
 		}
 	}
+	@Override
+	public String getDescription() {
+		return "checks if the given user is globally banned";
+	}
 }

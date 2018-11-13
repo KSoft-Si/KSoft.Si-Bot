@@ -25,4 +25,9 @@ public class WikiHow extends Command {
 		channel.sendMessage(eb.build()).queue();
 	}
 
+	@Override
+	public String getDescription() {
+		return "gets a random wikihow";
+	}
+
 }

@@ -45,4 +45,9 @@ public class Lyrics extends Command {
 		channel.sendMessage(eb.build()).queue();
 	}
 
+	@Override
+	public String getDescription() {
+		return "gets lyrics to the given song";
+	}
+
 }

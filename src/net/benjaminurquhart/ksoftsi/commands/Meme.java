@@ -23,5 +23,10 @@ public class Meme extends Command {
 		EmbedBuilder eb = EmbedUtils.getEmbed(event.getGuild(), image.getImageUrl(), image.getSubreddit(), event.getAuthor());
 		channel.sendMessage(eb.build()).queue();
 	}
+
+	@Override
+	public String getDescription() {
+		return "gets a random meme";
+	}
 	
 }

@@ -36,4 +36,9 @@ public class Scan extends Command{
 		}
 	}
 
+	@Override
+	public String getDescription() {
+		return "currently broken, don't use";
+	}
+
 }

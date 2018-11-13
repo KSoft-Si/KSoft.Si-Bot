@@ -43,5 +43,9 @@ public class Image extends Command{
 			channel.sendMessage(e.toString()).queue();
 		}
 	}
+	@Override
+	public String getDescription() {
+		return "gets a random image";
+	}
 
 }
