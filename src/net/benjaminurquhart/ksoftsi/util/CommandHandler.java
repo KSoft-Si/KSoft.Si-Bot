@@ -22,6 +22,7 @@ public class CommandHandler extends ListenerAdapter{
 	}
 	public void registerCommand(Command command){
 		commands.put(command.getName(), command);
+		System.out.println("Registered command " + command.getName());
 	}
 	public List<Command> getRegisteredCommands(){
 		List<Command> out = new ArrayList<>();
