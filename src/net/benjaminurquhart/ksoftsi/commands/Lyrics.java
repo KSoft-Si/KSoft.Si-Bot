@@ -39,7 +39,7 @@ public class Lyrics extends Command {
 		if(text.length() > 1024){
 			text = text.substring(0, 1020) + "...";
 		}
-		EmbedBuilder eb = EmbedUtils.getEmbed(event.getGuild(), null, "Lyrics", event.getAuthor());
+		EmbedBuilder eb = EmbedUtils.getEmbed(event.getGuild(), null, "Track ID: " + lyric.getSongId(), event.getAuthor());
 		eb.setDescription(text);
 		eb.setTitle("\"" + lyric.getTitle() + "\" by " + lyric.getArtistName());
 		channel.sendMessage(eb.build()).queue();
