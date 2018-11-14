@@ -1,6 +1,7 @@
 package net.benjaminurquhart.ksoftsi.commands;
 
 import java.util.Arrays;
+import java.util.List;
 
 import net.benjaminurquhart.ksoftsi.KSoftSi;
 import net.benjaminurquhart.ksoftsi.util.EmbedUtils;
@@ -40,7 +41,9 @@ public class Image extends Command{
 			channel.sendMessage(eb.build()).queue();
 		}
 		catch(IllegalArgumentException e){
-			channel.sendMessage("Unknown tag `" + args[2] + "`.\nValid tags: " + (Arrays.asList(ImageTag.values()).toString().replace("[", "").replace("]", "").toLowerCase().replace("lewd", ""))).queue();
+			List<ImageTag> tags = Arrays.asList(ImageTag.values());
+			tags.remove(ImageTag.LEWD);
+			channel.sendMessage("Unknown tag `" + args[2] + "`.\nValid tags: " + (tags.toString().replace("[", "").replace("]", "").toLowerCase())).queue();
 		}
 		catch(Exception e){
 			channel.sendMessage(e.toString()).queue();
