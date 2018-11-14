@@ -27,6 +27,9 @@ public class Image extends Command{
 		}
 		try{
 			ImageTag tag = ImageTag.valueOf(args[2].toUpperCase());
+			if(tag.equals(ImageTag.LEWD)){
+				throw new IllegalArgumentException("Blacklisted");
+			}
 			if(!channel.isNSFW() && tag.isNSFW()){
 				channel.sendMessage("That tag cannot be used outside of an NSFW channel!").queue();
 				return;
@@ -37,7 +40,7 @@ public class Image extends Command{
 			channel.sendMessage(eb.build()).queue();
 		}
 		catch(IllegalArgumentException e){
-			channel.sendMessage("Unknown tag `" + args[2] + "`.\nValid tags: " + (Arrays.asList(ImageTag.values()).toString().replace("[", "").replace("]", "").toLowerCase())).queue();
+			channel.sendMessage("Unknown tag `" + args[2] + "`.\nValid tags: " + (Arrays.asList(ImageTag.values()).toString().replace("[", "").replace("]", "").toLowerCase().replace("lewd", ""))).queue();
 		}
 		catch(Exception e){
 			channel.sendMessage(e.toString()).queue();
