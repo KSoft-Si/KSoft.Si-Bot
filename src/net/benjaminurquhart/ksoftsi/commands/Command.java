@@ -28,5 +28,8 @@ public abstract class Command {
 	public String getDescription(){
 		return "no description provided";
 	}
+	public boolean hide(){
+		return false;
+	}
 	public abstract void handle(GuildMessageReceivedEvent event, KSoftSi self);
 }

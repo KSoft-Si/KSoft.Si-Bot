@@ -11,10 +11,6 @@ import net.explodingbush.ksoftapi.enums.ImageType;
 
 public class Meme extends Command {
 
-	public Meme() {
-		super("meme");
-	}
-
 	@Override
 	public void handle(GuildMessageReceivedEvent event, KSoftSi self) {
 		TextChannel channel = event.getChannel();

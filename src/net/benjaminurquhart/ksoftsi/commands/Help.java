@@ -18,6 +18,9 @@ public class Help extends Command{
 		List<Command> commands = ((CommandHandler)event.getJDA().getRegisteredListeners().get(0)).getRegisteredCommands();
 		String out = "```";
 		for(Command command : commands){
+			if(command.hide()){
+				continue;
+			}
 			out += command.getHelpMenu().replace("Usage:", "").trim() + " - " + command.getDescription() + "\n";
 		}
 		out += "```";

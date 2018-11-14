@@ -11,10 +11,6 @@ import net.explodingbush.ksoftapi.KSoftAPI;
 import net.explodingbush.ksoftapi.entities.Ban;
 
 public class Scan extends Command{
-	
-	public Scan(){
-		super("scan");
-	}
 
 	@Override
 	public void handle(GuildMessageReceivedEvent event, KSoftSi self) {
