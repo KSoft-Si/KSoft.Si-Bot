@@ -36,8 +36,8 @@ public class Lyrics extends Command {
 		}
 		Lyric lyric = results.get(0);
 		String text = lyric.getLyrics();
-		if(text.length() > 1024){
-			text = text.substring(0, 1020) + "...";
+		if(text.length() > 2000){
+			text = text.substring(0, 1994) + "...";
 		}
 		EmbedBuilder eb = EmbedUtils.getEmbed(event.getGuild(), null, "Track ID: " + lyric.getSongId(), event.getAuthor());
 		eb.setDescription(text);
