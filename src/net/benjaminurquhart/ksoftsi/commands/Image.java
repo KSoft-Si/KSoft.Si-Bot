@@ -1,5 +1,6 @@
 package net.benjaminurquhart.ksoftsi.commands;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class Image extends Command{
 		}
 		try{
 			ImageTag tag = ImageTag.valueOf(args[2].toUpperCase());
-			if(tag.equals(ImageTag.LEWD)){
+			if(tag.equals(ImageTag.LEWD) || args[2].toLowerCase().contains("lewd")){
 				throw new IllegalArgumentException("Blacklisted");
 			}
 			if(!channel.isNSFW() && tag.isNSFW()){
@@ -41,9 +42,9 @@ public class Image extends Command{
 			channel.sendMessage(eb.build()).queue();
 		}
 		catch(IllegalArgumentException e){
-			List<ImageTag> tags = Arrays.asList(ImageTag.values());
+			List<ImageTag> tags = new ArrayList<>(Arrays.asList(ImageTag.values()));
 			tags.remove(ImageTag.LEWD);
-			channel.sendMessage("Unknown tag `" + args[2] + "`.\nValid tags: " + (tags.toString().replace("[", "").replace("]", "").toLowerCase())).queue();
+			channel.sendMessage("Unknown tag `" + args[2] + "`.\nValid tags: " + (tags.toString().replace("[", "").replace("]", "").toLowerCase().replace("lewd, ", ""))).queue();
 		}
 		catch(Exception e){
 			channel.sendMessage(e.toString()).queue();
