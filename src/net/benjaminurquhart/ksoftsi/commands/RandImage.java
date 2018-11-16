@@ -8,6 +8,7 @@ import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.explodingbush.ksoftapi.KSoftAPI;
 import net.explodingbush.ksoftapi.entities.Reddit;
 import net.explodingbush.ksoftapi.enums.ImageType;
+import net.explodingbush.ksoftapi.exceptions.NotFoundException;
 
 public class RandImage extends Command{
 
@@ -33,8 +34,8 @@ public class RandImage extends Command{
 			eb.setAuthor(image.getAuthor(), image.getSourceUrl());
 			channel.sendMessage(eb.build()).queue();
 		}
-		catch(Exception e){
-			channel.sendMessage(e.toString()).queue();
+		catch(NotFoundException e){
+			channel.sendMessage("Unknown subreddit: " + args[2].toLowerCase()).queue();
 		}
 	}
 	@Override
