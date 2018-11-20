@@ -1,10 +1,10 @@
 package net.benjaminurquhart.ksoftsi.util;
 
-import net.explodingbush.ksoftapi.entities.Kumo;
+import net.explodingbush.ksoftapi.entities.KumoWeather;
 import net.explodingbush.ksoftapi.enums.Units;
 
 public class WeatherUtil {
-	public static final String WEATHER_FORMAT = "**Temperature:** %.2f\u00B0 {temp}\n**Apparent Temperature:** %.2f\u00B0 {temp}\n**Humidity:** %s\n**Visibilty:** %.2f {dist}\n**Wind Speed:** %.2f {speed} %s (Gusts: %.2f {speed})\n**Chance of precipitation:** %s";
+	public static final String WEATHER_FORMAT = "**Temperature:** %.2f \u00B0{temp}\n**Apparent Temperature:** %.2f \u00B0{temp}\n**Humidity:** %s\n**Visibilty:** %.2f {dist}\n**Wind Speed:** %.2f {speed} %s (Gusts: %.2f {speed})\n**Chance of precipitation:** %s";
 
 	private static String getDirection(int dir){
 		if(dir > 337.5){
@@ -60,7 +60,7 @@ public class WeatherUtil {
 				.replace("{dist}", getDistanceUnit(unit))
 				.replace("{speed}", getSpeedUnit(unit));
 	}
-	public static String format(Kumo data){
+	public static String format(KumoWeather data){
 		return String.format(
 				setUnits(data.getUnits()),
 				data.getTemperature(),

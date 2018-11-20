@@ -11,7 +11,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.explodingbush.ksoftapi.KSoftAPI;
 import net.explodingbush.ksoftapi.entities.Alert;
-import net.explodingbush.ksoftapi.entities.Kumo;
+import net.explodingbush.ksoftapi.entities.KumoWeather;
 import net.explodingbush.ksoftapi.enums.ReportType;
 import net.explodingbush.ksoftapi.enums.Units;
 import net.explodingbush.ksoftapi.exceptions.NotFoundException;
@@ -29,7 +29,7 @@ public class Weather extends Command{
 		}
 		try{
 			channel.sendTyping().queue();
-			Kumo data = api.getKumo().setLocationQuery(args[2]).setReportType(ReportType.CURRENTLY).setUnits(Units.AUTO).execute();
+			KumoWeather data = api.getKumo().getWeather().setLocationQuery(args[2]).setReportType(ReportType.CURRENTLY).setUnits(Units.AUTO).execute();
 			EmbedBuilder eb = EmbedUtils.getEmbed(event.getGuild(), data.getIconUrl(), data.getLocation().getAddress(), event.getAuthor());
 			eb.setTimestamp(data.getTime().minusHours(5));
 			eb.setTitle(data.getSummary());

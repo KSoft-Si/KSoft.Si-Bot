@@ -1,19 +1,20 @@
 package net.benjaminurquhart.ksoftsi.commands;
 
+/*
 import java.util.ArrayList;
 import java.util.List;
-
-import net.benjaminurquhart.ksoftsi.KSoftSi;
+*/
+import net.benjaminurquhart.ksoftsi.KSoftSi;/*
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.core.entities.TextChannel;*/
+import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;/*
 import net.explodingbush.ksoftapi.KSoftAPI;
-import net.explodingbush.ksoftapi.entities.Ban;
+import net.explodingbush.ksoftapi.entities.Ban;*/
 
 public class Scan extends Command{
 
 	@Override
-	public void handle(GuildMessageReceivedEvent event, KSoftSi self) {
+	public void handle(GuildMessageReceivedEvent event, KSoftSi self) {/*
 		TextChannel channel = event.getChannel();
 		KSoftAPI api = self.getAPI();
 		List<Long> ids = new ArrayList<>();
@@ -29,9 +30,13 @@ public class Scan extends Command{
 		}
 		catch(Exception e){
 			channel.sendMessage(e.toString()).queue();
-		}
+		}*/
 	}
 
+	@Override
+	public boolean hide(){
+		return true;
+	}
 	@Override
 	public String getDescription() {
 		return "currently broken, don't use";

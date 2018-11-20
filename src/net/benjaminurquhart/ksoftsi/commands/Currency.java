@@ -1,12 +1,12 @@
 package net.benjaminurquhart.ksoftsi.commands;
 
+import net.explodingbush.ksoftapi.entities.KumoCurrency;
 import net.benjaminurquhart.ksoftsi.KSoftSi;
 import net.benjaminurquhart.ksoftsi.util.EmbedUtils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.explodingbush.ksoftapi.KSoftAPI;
-import net.explodingbush.ksoftapi.entities.CurrencyConversion;
 
 public class Currency extends Command {
 
@@ -23,9 +23,9 @@ public class Currency extends Command {
 			return;
 		}
 		try{
-			CurrencyConversion conversion = api.getCurrencyConverter().from(args[2]).to(args[3]).amount(Double.parseDouble(args[4])).execute();
+			KumoCurrency conversion = api.getKumo().getCurrency().from(args[2]).to(args[3]).amount(Double.parseDouble(args[4])).execute();
 			EmbedBuilder eb = EmbedUtils.getEmbed(event.getGuild(), null, "Currency Conversion", event.getAuthor());
-			eb.setDescription(String.format("**%.2f %s**\n**%s**", conversion.originalAmount(), conversion.from().getCurrencyCode().toUpperCase(), conversion.convertedAmountFormatted()));
+			eb.setDescription(String.format("**%.2f %s**\n**%s**", conversion.originalAmount(), conversion.from().getCurrencyCode().toUpperCase(), conversion.convertedAmountPretty()));
 			channel.sendMessage(eb.build()).queue();
 		}
 		catch(NumberFormatException e){

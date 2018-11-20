@@ -2,6 +2,7 @@ package net.benjaminurquhart.ksoftsi;
 
 import java.io.File;
 import java.io.FileInputStream;
+//import java.util.Arrays;
 import java.util.Set;
 
 import org.json.JSONObject;
@@ -15,7 +16,7 @@ import net.explodingbush.ksoftapi.KSoftAPI;
 
 public class KSoftSi {
 
-	private static String token;
+	private static String token, imgenToken;
 	private static KSoftAPI api;
 	public static String prefix;
 	
@@ -32,9 +33,23 @@ public class KSoftSi {
 		token = json.getString("token");
 		prefix = json.getString("prefix");
 		api = new KSoftAPI(json.getString("ksoft"));
+		if(json.has("imgen")){
+			imgenToken = json.getString("imgen");
+		}
+		else{
+			imgenToken = null;
+		}
 	}
 	public KSoftAPI getAPI(){
 		return api;
+	}
+	public String getImgenToken(){
+		/*
+		boolean calledByImgen = Arrays.asList(Thread.currentThread().getStackTrace()).stream().filter((t) -> t.toString().contains("ImgGen")).count() > 0;
+		if(!calledByImgen){
+			throw new SecurityException("Unauthorized");
+		}*/
+		return imgenToken;
 	}
 	public static void main(String[] args) throws Exception{
 		KSoftSi self = new KSoftSi();
