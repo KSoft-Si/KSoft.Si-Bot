@@ -20,7 +20,7 @@ public class ImgGen extends Command {
 	public List<String> endpoints;
 	
 	public ImgGen(){
-		super("imgen", "imagename", "user", "user", "text");
+		super("imgen", "imagename", "text");
 		this.endpoints = new ArrayList<>();
 		try{
 			refreshEndpoints();
@@ -47,12 +47,13 @@ public class ImgGen extends Command {
 		for(int i = 0; i < endpoints.length; i++){
 			endpoints[i] = endpoints[i].split("<span>")[1].split("</span>")[0].replace("\n", "");
 		}
+		this.endpoints.clear();
 		this.endpoints.addAll(Arrays.asList(endpoints));
 	}
 	@Override
 	public void handle(GuildMessageReceivedEvent event, KSoftSi self) {
 		TextChannel channel = event.getChannel();
-		String[] args = event.getMessage().getContentRaw().toLowerCase().split(" ", 6);
+		String[] args = event.getMessage().getContentRaw().toLowerCase().split(" ", 4);
 		try{
 			String endpoint = args[2].toLowerCase();
 			if(endpoint.equals("refresh") && event.getAuthor().getId().equals("273216249021071360")){
@@ -65,13 +66,13 @@ public class ImgGen extends Command {
 				return;
 			}
 			List<User> users = event.getMessage().getMentionedUsers();
-			String text = args[3 + users.size()];
+			String text = args[3];
 			User user1 = (users.isEmpty() ? event.getAuthor() : users.get(0)), user2 = (users.size() < 2 ? user1 : users.get(1));
+			text = text.replace(user1.getAsMention(), "").replace(user2.getAsMention(), "");
 			InputStream image = getStream(String.format(API, endpoint, URLEncoder.encode(text, "UTF-8").replace("%2C", ","), user1.getAvatarUrl(), user2.getAvatarUrl(), user1.getName(), user2.getName()), self.getImgenToken());
 			channel.sendFile(image, endpoint + ".png").queue();
 		}
 		catch(Exception e){
-			e.printStackTrace();
 			channel.sendMessage(e.toString()).queue();
 		}
 	}
