@@ -53,7 +53,7 @@ public class ImgGen extends Command {
 	@Override
 	public void handle(GuildMessageReceivedEvent event, KSoftSi self) {
 		TextChannel channel = event.getChannel();
-		String[] args = event.getMessage().getContentRaw().toLowerCase().split(" ", 4);
+		String[] args = event.getMessage().getContentRaw().split(" ", 4);
 		try{
 			String endpoint = args[2].toLowerCase();
 			if(endpoint.equals("refresh") && event.getAuthor().getId().equals("273216249021071360")){
