@@ -17,10 +17,10 @@ import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 public class ImgGen extends Command {
 
 	public static final String API = "https://services.is-going-to-rickroll.me/api/%s?text=%s&avatar1=%s&avatar2=%s&username1=%s&username2=%s";
-	public List<String> endpoints;
+	private List<String> endpoints;
 	
 	public ImgGen(){
-		super("imgen", "imagename", "text");
+		super("imgen", "image name", "text");
 		this.endpoints = new ArrayList<>();
 		try{
 			refreshEndpoints();
@@ -66,11 +66,29 @@ public class ImgGen extends Command {
 				return;
 			}
 			List<User> users = event.getMessage().getMentionedUsers();
-			String text = args[3];
-			User user1 = (users.isEmpty() ? event.getAuthor() : users.get(0)), user2 = (users.size() < 2 ? user1 : users.get(1));
+			String text = "";
+			if(args.length > 3){
+				text = args[3];
+			}
+			User user1, user2;
+			if(users.isEmpty()){
+				user1 = event.getAuthor();
+				user2 = event.getAuthor();
+			}
+			else if(users.size() == 1){
+				user1 = users.get(0);
+				user2 = event.getAuthor();
+			}
+			else{
+				user1 = users.get(0);
+				user2 = users.get(1);
+			}
 			text = text.replace(user1.getAsMention(), "").replace(user2.getAsMention(), "");
-			InputStream image = getStream(String.format(API, endpoint, URLEncoder.encode(text, "UTF-8").replace("%2C", ","), user1.getAvatarUrl(), user2.getAvatarUrl(), user1.getName(), user2.getName()), self.getImgenToken());
+			InputStream image = getStream(String.format(API, endpoint, URLEncoder.encode(text, "UTF-8").replace("%2C", ","), user1.getAvatarUrl(), user2.getAvatarUrl(), URLEncoder.encode(user1.getName(), "UTF-8"), URLEncoder.encode(user2.getName(), "UTF-8")), self.getImgenToken());
 			channel.sendFile(image, endpoint + ".png").queue();
+		}
+		catch(IndexOutOfBoundsException e){
+			channel.sendMessage(this.getHelpMenu()).queue();
 		}
 		catch(Exception e){
 			channel.sendMessage(e.toString()).queue();
