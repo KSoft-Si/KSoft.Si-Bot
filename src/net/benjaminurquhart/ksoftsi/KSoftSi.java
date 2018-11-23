@@ -16,7 +16,7 @@ import net.explodingbush.ksoftapi.KSoftAPI;
 
 public class KSoftSi {
 
-	private static String token, imgenToken;
+	private static String token, imgenToken, ksoftToken;
 	private static KSoftAPI api;
 	public static String prefix;
 	
@@ -30,9 +30,10 @@ public class KSoftSi {
 		}
 		stream.close();
 		JSONObject json = new JSONObject(data);
+		ksoftToken = json.getString("ksoft");
 		token = json.getString("token");
 		prefix = json.getString("prefix");
-		api = new KSoftAPI(json.getString("ksoft"));
+		api = new KSoftAPI(ksoftToken);
 		if(json.has("imgen")){
 			imgenToken = json.getString("imgen");
 		}
@@ -42,6 +43,9 @@ public class KSoftSi {
 	}
 	public KSoftAPI getAPI(){
 		return api;
+	}
+	public String getKSoftToken(){
+		return ksoftToken;
 	}
 	public String getImgenToken(){
 		/*
@@ -56,9 +60,10 @@ public class KSoftSi {
 		CommandHandler cmdHandler = new CommandHandler(self);
 		Reflections reflections = new Reflections("net.benjaminurquhart.ksoftsi.commands");
         Set<Class<? extends Command>> commandClasses = reflections.getSubTypesOf(Command.class);
+        Command cls;
         for (Class<? extends Command> i : commandClasses) {
             try {
-                Command cls = i.getDeclaredConstructor().newInstance();
+            	cls = i.getDeclaredConstructor().newInstance();
                 cmdHandler.registerCommand(cls);
             } 
             catch (Exception e) {
