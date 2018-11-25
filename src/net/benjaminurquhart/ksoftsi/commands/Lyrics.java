@@ -9,7 +9,8 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.explodingbush.ksoftapi.KSoftAPI;
-import net.explodingbush.ksoftapi.entities.Lyric;
+import net.explodingbush.ksoftapi.entities.lyrics.Track;
+import net.explodingbush.ksoftapi.exceptions.NotFoundException;
 
 public class Lyrics extends Command {
 
@@ -26,22 +27,27 @@ public class Lyrics extends Command {
 			channel.sendMessage(Usage.getUsage(this, "query"));
 			return;
 		}
-		List<Lyric> results;
+		List<Track> results;
 		try{
-			results = api.getLyrics(args[2]).setLimit(1).execute();
+			results = api.getLyrics().search(args[2]).setLimit(1).execute();
 		}
-		catch(Exception e){
+		catch(NotFoundException e){
 			channel.sendMessage("No results for query `" + args[2] + "`").queue();
 			return;
 		}
-		Lyric lyric = results.get(0);
+		catch(NullPointerException e) {
+			channel.sendMessage("Failed to retrieve metadata for the given track. Blame NANI.").queue();
+			e.printStackTrace();
+			return;
+		}
+		Track lyric = results.get(0);
 		String text = lyric.getLyrics();
 		if(text.length() > 2000){
 			text = text.substring(0, 1994) + "...";
 		}
-		EmbedBuilder eb = EmbedUtils.getEmbed(event.getGuild(), null, "Track ID: " + lyric.getSongId(), event.getAuthor());
+		EmbedBuilder eb = EmbedUtils.getEmbed(event.getGuild(), null, "Track ID: " + lyric.getId(), event.getAuthor());
 		eb.setDescription(text);
-		eb.setTitle("\"" + lyric.getTitle() + "\" by " + lyric.getArtistName());
+		eb.setTitle("\"" + lyric.getName() + "\" by " + lyric.getArtist().getName());
 		channel.sendMessage(eb.build()).queue();
 	}
 

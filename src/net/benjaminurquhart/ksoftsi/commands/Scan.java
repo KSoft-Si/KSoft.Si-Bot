@@ -1,39 +1,43 @@
 package net.benjaminurquhart.ksoftsi.commands;
-
+/*
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
+import java.util.ArrayList;*/
 import java.util.List;
-
+import java.util.stream.Collectors;
+/*
 import org.json.JSONArray;
 import org.json.JSONObject;
-
+*/
 import net.benjaminurquhart.ksoftsi.KSoftSi;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.explodingbush.ksoftapi.KSoftAPI;
 import net.explodingbush.ksoftapi.entities.Ban;
+import net.explodingbush.ksoftapi.entities.BulkBan;/*
 import net.explodingbush.ksoftapi.entities.impl.BanImpl;
-import net.explodingbush.ksoftapi.enums.Routes;
+import net.explodingbush.ksoftapi.enums.Routes;*/
 
 public class Scan extends Command{
 
-	@SuppressWarnings("unchecked")
+	//@SuppressWarnings("unchecked")
 	@Override
 	public void handle(GuildMessageReceivedEvent event, KSoftSi self) {
 		TextChannel channel = event.getChannel();
-		List<String> ids = new ArrayList<>();
+		KSoftAPI api = self.getAPI();
+		BulkBan action = api.getBan().checkBulkBan();
 		for(Member member : event.getGuild().getMembers()){
 			if(member.getUser().isBot()){
 				continue;
 			}
-			ids.add(member.getUser().getId());
+			action.addId(member.getUser().getId());
 		}
-		byte[] out = new JSONObject().put("users", ids).toString().getBytes();
+		//byte[] out = new JSONObject().put("users", ids).toString().getBytes();
 		try{
-			//List<Ban> bans = api.getBulkBans().addIds(ids).execute();
-			URLConnection conn = new URL(Routes.BAN_BULKCHECK.toString()).openConnection();
+			/*
+			URLConnection conn = new URL(Routes.BAN_BULK.toString()).openConnection();
 			conn.setRequestProperty("Authorization", "Bearer " + self.getKSoftToken());
 			conn.setRequestProperty("Content-Length", ""+out.length);
 			conn.setRequestProperty("User-Agent", "KSoft.Si Bot");
@@ -50,11 +54,12 @@ public class Scan extends Command{
 			List<Ban> bans = new ArrayList<>();
 			for(Object obj : arr){
 	        	bans.add(new BanImpl(new JSONObject((java.util.HashMap<String, Object>)obj)));
-	        }
+	        }*/
+			List<Ban> bans = action.set().execute().getBulkBanStream().filter((ban) -> ban.isBanned() && ban.isBanActive()).collect(Collectors.toList());
 			channel.sendMessage(bans.size() + " people are globally banned on KSoft.Si in this guild").queue();
 		}
 		catch(Exception e){
-			channel.sendMessage(e.toString()).addFile(out, "request.json").queue();
+			channel.sendMessage(e.toString()).queue();
 		}
 	}
 
