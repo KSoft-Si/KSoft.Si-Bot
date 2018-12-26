@@ -3,7 +3,10 @@ package net.benjaminurquhart.ksoftsi.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.Map.Entry;
+
+import org.reflections.Reflections;
 
 import net.benjaminurquhart.ksoftsi.KSoftSi;
 import net.benjaminurquhart.ksoftsi.commands.Command;
@@ -20,9 +23,24 @@ public class CommandHandler extends ListenerAdapter{
 	public CommandHandler(KSoftSi self){
 		this.self = self;
 		this.commands = new HashMap<>();
+		Reflections reflections = new Reflections("net.benjaminurquhart.ksoftsi.commands");
+        Set<Class<? extends Command>> commandClasses = reflections.getSubTypesOf(Command.class);
+        Command cls;
+        for (Class<? extends Command> i : commandClasses) {
+            try {
+            	cls = i.getDeclaredConstructor().newInstance();
+                this.registerCommand(cls);
+            } 
+            catch (Exception e) {
+            	e.printStackTrace();
+            }
+        }
 	}
 	public void registerCommand(Command command){
 		commands.put(command.getName(), command);
+		for(String alias : command.getAliases()) {
+			commands.put(alias, command);
+		}
 		System.out.println("Registered " + (command.hide() ? "private " : "") + "command " + command.getName());
 	}
 	public List<Command> getRegisteredCommands(){
@@ -49,7 +67,7 @@ public class CommandHandler extends ListenerAdapter{
 			cmd = cmd.split(" ")[0];
 		}
 		Command command = commands.get(cmd);
-		if(!(command == null)){
+		if(command != null){
 			try{
 				command.handle(event, self);
 			}

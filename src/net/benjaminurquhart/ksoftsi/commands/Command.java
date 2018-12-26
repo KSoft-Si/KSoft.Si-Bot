@@ -31,5 +31,8 @@ public abstract class Command {
 	public boolean hide(){
 		return false;
 	}
+	public String[] getAliases() {
+		return new String[0];
+	}
 	public abstract void handle(GuildMessageReceivedEvent event, KSoftSi self);
 }

@@ -6,49 +6,46 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.benjaminurquhart.ksoftsi.KSoftSi;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
+import org.json.JSONObject;
+
 public class ImgGen extends Command {
 
 	public static final String API = "https://services.is-going-to-rickroll.me/api/%s?text=%s&avatar1=%s&avatar2=%s&username1=%s&username2=%s";
+	public static final String[] aliases = {"imggen"};
 	private List<String> endpoints;
 	
-	public ImgGen(){
+	@SuppressWarnings("unchecked")
+	public ImgGen() throws Exception{
 		super("imgen", "image name", "text");
-		this.endpoints = new ArrayList<>();
-		try{
-			refreshEndpoints();
+		StringBuilder endpoints = new StringBuilder();
+		InputStream stream = getStream("https://services.is-going-to-rickroll.me/endpoints.json", null);
+		int c = 0;
+		while((c = stream.read()) != -1) {
+			endpoints.append((char)c);
 		}
-		catch(Exception e){}
+		stream.close();
+		this.endpoints = new ArrayList<>(new JSONObject(endpoints.toString()).getJSONArray("endpoints").toList().stream().map((obj) -> ((java.util.HashMap<String, Object>)obj).get("name").toString()).collect(Collectors.toList()));
+		this.endpoints.sort((s1,s2) -> s1.compareTo(s2));
 	}
-	private InputStream getStream(String link, String auth) throws IOException{
+	private URLConnection getConn(String link, String auth) throws IOException{
 		URL url = new URL(link);
 		URLConnection conn = url.openConnection();
 		if(auth != null){
 			conn.setRequestProperty("Authorization", auth);
 		}
 		conn.setRequestProperty("User-Agent", "KSoft.Si Bot");
-		return conn.getInputStream();
+		return conn;
 	}
-	public void refreshEndpoints() throws IOException{
-		InputStream stream = getStream("https://services.is-going-to-rickroll.me/endpoints", null);
-		StringBuilder sb = new StringBuilder();
-		int c;
-		while((c = stream.read()) != -1){
-			sb.append((char)c);
-		}
-		String[] endpoints = sb.toString().split("<div class=\"card\">", 2)[1].split("<div class=\"card\">");
-		for(int i = 0; i < endpoints.length; i++){
-			endpoints[i] = endpoints[i].split("<span>")[1].split("</span>")[0].replace("\n", "");
-		}
-		this.endpoints.clear();
-		this.endpoints.addAll(Arrays.asList(endpoints));
+	private InputStream getStream(String link, String auth) throws IOException{
+		return getConn(link, auth).getInputStream();
 	}
 	@Override
 	public void handle(GuildMessageReceivedEvent event, KSoftSi self) {
@@ -56,11 +53,6 @@ public class ImgGen extends Command {
 		String[] args = event.getMessage().getContentRaw().split(" ", 4);
 		try{
 			String endpoint = args[2].toLowerCase();
-			if(endpoint.equals("refresh") && event.getAuthor().getId().equals("273216249021071360")){
-				refreshEndpoints();
-				channel.sendMessage(endpoints.toString()).queue();
-				return;
-			}
 			if(!endpoints.contains(endpoint)){
 				channel.sendMessage("Invalid image name. Valid images:\n" + endpoints.stream().reduce("", (out,point) -> out += point + " ")).queue();
 				return;
@@ -83,19 +75,39 @@ public class ImgGen extends Command {
 				user1 = users.get(0);
 				user2 = users.get(1);
 			}
+			channel.sendTyping().queue();
 			text = text.replace(user1.getAsMention(), "").replace(user2.getAsMention(), "");
-			InputStream image = getStream(String.format(API, endpoint, URLEncoder.encode(text, "UTF-8").replace("%2C", ","), user1.getAvatarUrl(), user2.getAvatarUrl(), URLEncoder.encode(user1.getName(), "UTF-8"), URLEncoder.encode(user2.getName(), "UTF-8")), self.getImgenToken());
-			channel.sendFile(image, endpoint + ".png").queue();
+			URLConnection conn = getConn(String.format(API, endpoint, URLEncoder.encode(text, "UTF-8").replace("%2C", ","), user1.getAvatarUrl(), user2.getAvatarUrl(), URLEncoder.encode(user1.getName(), "UTF-8"), URLEncoder.encode(user2.getName(), "UTF-8")), self.getImgenToken());
+			InputStream image = conn.getInputStream();
+			List<Byte> byteList = new ArrayList<>();
+			int i = 0;
+			while((i = image.read()) != -1) {
+				byteList.add((byte)i);
+			}
+			image.close();
+			int[] count = new int[1];
+			byte[] bytes = new byte[byteList.size()];
+			byteList.forEach((b) -> {
+				bytes[count[0]] = b;
+				count[0]++;
+			});
+			String extension = conn.getHeaderField("Content-Type");
+			extension = "." + extension.split(";")[0].split("/")[1];
+			channel.sendFile(bytes, endpoint + extension).queue();
 		}
 		catch(IndexOutOfBoundsException e){
 			channel.sendMessage(this.getHelpMenu()).queue();
 		}
-		catch(Exception e){
+		catch(IOException e) {
 			channel.sendMessage(e.toString()).queue();
 		}
 	}
 	@Override
 	public String getDescription(){
 		return "generates cool images for you!";
+	}
+	@Override
+	public String[] getAliases() {
+		return aliases;
 	}
 }

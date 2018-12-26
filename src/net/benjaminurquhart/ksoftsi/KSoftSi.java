@@ -2,13 +2,9 @@ package net.benjaminurquhart.ksoftsi;
 
 import java.io.File;
 import java.io.FileInputStream;
-//import java.util.Arrays;
-import java.util.Set;
 
 import org.json.JSONObject;
-import org.reflections.Reflections;
 
-import net.benjaminurquhart.ksoftsi.commands.*;
 import net.benjaminurquhart.ksoftsi.util.CommandHandler;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
@@ -57,19 +53,6 @@ public class KSoftSi {
 	}
 	public static void main(String[] args) throws Exception{
 		KSoftSi self = new KSoftSi();
-		CommandHandler cmdHandler = new CommandHandler(self);
-		Reflections reflections = new Reflections("net.benjaminurquhart.ksoftsi.commands");
-        Set<Class<? extends Command>> commandClasses = reflections.getSubTypesOf(Command.class);
-        Command cls;
-        for (Class<? extends Command> i : commandClasses) {
-            try {
-            	cls = i.getDeclaredConstructor().newInstance();
-                cmdHandler.registerCommand(cls);
-            } 
-            catch (Exception e) {
-            	e.printStackTrace();
-            }
-        }
-		new JDABuilder(token).addEventListener(cmdHandler).setGame(Game.watching("people get the prefix wrong (it's 'ksoft')")).build();
+		new JDABuilder(token).addEventListener(new CommandHandler(self)).setGame(Game.watching("people get the prefix wrong (it's 'ksoft')")).build();
 	}
 }
