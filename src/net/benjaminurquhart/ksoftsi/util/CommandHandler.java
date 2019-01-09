@@ -1,10 +1,8 @@
 package net.benjaminurquhart.ksoftsi.util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.reflections.Reflections;
 
@@ -18,23 +16,19 @@ public class CommandHandler extends ListenerAdapter{
 
 	private KSoftSi self;
 	private HashMap<String, Command> commands;
-	private GuildMessageReceivedEvent event;
 	
 	public CommandHandler(KSoftSi self){
 		this.self = self;
 		this.commands = new HashMap<>();
 		Reflections reflections = new Reflections("net.benjaminurquhart.ksoftsi.commands");
-        Set<Class<? extends Command>> commandClasses = reflections.getSubTypesOf(Command.class);
-        Command cls;
-        for (Class<? extends Command> i : commandClasses) {
-            try {
-            	cls = i.getDeclaredConstructor().newInstance();
-                this.registerCommand(cls);
-            } 
-            catch (Exception e) {
-            	e.printStackTrace();
-            }
-        }
+		reflections.getSubTypesOf(Command.class).forEach((cls) -> {
+			try{
+				this.registerCommand(cls.getDeclaredConstructor().newInstance());
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		});
 	}
 	public void registerCommand(Command command){
 		commands.put(command.getName(), command);
@@ -44,14 +38,7 @@ public class CommandHandler extends ListenerAdapter{
 		System.out.println("Registered " + (command.hide() ? "private " : "") + "command " + command.getName());
 	}
 	public List<Command> getRegisteredCommands(){
-		List<Command> out = new ArrayList<>();
-		for(Entry<String, Command> entry : commands.entrySet()){
-			out.add(entry.getValue());
-		}
-		return out;
-	}
- 	protected GuildMessageReceivedEvent getEvent(){
-		return event;
+		return commands.values().stream().distinct().collect(Collectors.toList());
 	}
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event){

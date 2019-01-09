@@ -79,21 +79,10 @@ public class ImgGen extends Command {
 			text = text.replace(user1.getAsMention(), "").replace(user2.getAsMention(), "");
 			URLConnection conn = getConn(String.format(API, endpoint, URLEncoder.encode(text, "UTF-8").replace("%2C", ","), user1.getAvatarUrl(), user2.getAvatarUrl(), URLEncoder.encode(user1.getName(), "UTF-8"), URLEncoder.encode(user2.getName(), "UTF-8")), self.getImgenToken());
 			InputStream image = conn.getInputStream();
-			List<Byte> byteList = new ArrayList<>();
-			int i = 0;
-			while((i = image.read()) != -1) {
-				byteList.add((byte)i);
-			}
-			image.close();
-			int[] count = new int[1];
-			byte[] bytes = new byte[byteList.size()];
-			byteList.forEach((b) -> {
-				bytes[count[0]] = b;
-				count[0]++;
-			});
 			String extension = conn.getHeaderField("Content-Type");
 			extension = "." + extension.split(";")[0].split("/")[1];
-			channel.sendFile(bytes, endpoint + extension).queue();
+			channel.sendFile(image, endpoint + extension).queue();
+			image.close();
 		}
 		catch(IndexOutOfBoundsException e){
 			channel.sendMessage(this.getHelpMenu()).queue();

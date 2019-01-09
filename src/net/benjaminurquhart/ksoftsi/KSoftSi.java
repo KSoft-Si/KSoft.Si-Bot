@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import org.json.JSONObject;
 
 import net.benjaminurquhart.ksoftsi.util.CommandHandler;
+import net.benjaminurquhart.ksoftsi.util.Timestamps;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
 import net.explodingbush.ksoftapi.KSoftAPI;
@@ -36,6 +37,7 @@ public class KSoftSi {
 		else{
 			imgenToken = null;
 		}
+		Timestamps.enable();
 	}
 	public KSoftAPI getAPI(){
 		return api;
@@ -53,6 +55,7 @@ public class KSoftSi {
 	}
 	public static void main(String[] args) throws Exception{
 		KSoftSi self = new KSoftSi();
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> Timestamps.disable()));
 		new JDABuilder(token).addEventListener(new CommandHandler(self)).setGame(Game.watching("people get the prefix wrong (it's 'ksoft')")).build();
 	}
 }
