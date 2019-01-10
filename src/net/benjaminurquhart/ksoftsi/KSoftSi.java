@@ -1,7 +1,7 @@
 package net.benjaminurquhart.ksoftsi;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.nio.file.Files;
 
 import org.json.JSONObject;
 
@@ -18,14 +18,7 @@ public class KSoftSi {
 	public static String prefix;
 	
 	public KSoftSi() throws Exception{
-		FileInputStream stream = new FileInputStream(new File("ksoft-config.json"));
-		String data = "";
-		int latest = stream.read();
-		while(latest != -1){
-			data += (char)latest;
-			latest = stream.read();
-		}
-		stream.close();
+		String data = new String(Files.readAllBytes(new File("ksoft-config.json").toPath()));
 		JSONObject json = new JSONObject(data);
 		ksoftToken = json.getString("ksoft");
 		token = json.getString("token");
