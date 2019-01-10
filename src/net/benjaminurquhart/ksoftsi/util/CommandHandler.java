@@ -59,6 +59,7 @@ public class CommandHandler extends ListenerAdapter{
 				command.handle(event, self);
 			}
 			catch(Exception e){
+				e.printStackTrace();
 				event.getChannel().sendMessage("Oh no! Something went wrong while executing that command!\nThis incident has been reported.\n" + e).queue();
 				User owner = event.getJDA().getUserById("273216249021071360");
 				if(!(owner == null)){

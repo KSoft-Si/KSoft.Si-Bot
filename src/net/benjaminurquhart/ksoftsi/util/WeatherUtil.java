@@ -1,6 +1,6 @@
 package net.benjaminurquhart.ksoftsi.util;
 
-import net.explodingbush.ksoftapi.entities.KumoWeather;
+import net.explodingbush.ksoftapi.entities.Weather;
 import net.explodingbush.ksoftapi.enums.Units;
 
 public class WeatherUtil {
@@ -60,7 +60,7 @@ public class WeatherUtil {
 				.replace("{dist}", getDistanceUnit(unit))
 				.replace("{speed}", getSpeedUnit(unit));
 	}
-	public static String format(KumoWeather data){
+	public static String format(Weather data){
 		return String.format(
 				setUnits(data.getUnits()),
 				data.getTemperature(),

@@ -9,7 +9,7 @@ public class Timestamps {
 	public static void enable(){
 		try{
 			if(enable == null){
-				enable = Timestamps.class.getClassLoader().loadClass("net.benjaminurquhart.stdout.STDOUTPlus").getDeclaredMethod("enable");
+				enable = Timestamps.class.getClassLoader().loadClass("net.benjaminurquhart.stdout.STDIOPlus").getDeclaredMethod("enable");
 			}
 			enable.invoke(null);
 		}
@@ -20,7 +20,7 @@ public class Timestamps {
 	public static void disable(){
 		try{
 			if(disable == null){
-				disable = Timestamps.class.getClassLoader().loadClass("net.benjaminurquhart.stdout.STDOUTPlus").getDeclaredMethod("disable");
+				disable = Timestamps.class.getClassLoader().loadClass("net.benjaminurquhart.stdout.STDIOPlus").getDeclaredMethod("disable");
 			}
 			disable.invoke(null);
 		}

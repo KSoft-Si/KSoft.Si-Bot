@@ -30,6 +30,9 @@ public class Lyrics extends Command {
 		List<Track> results;
 		try{
 			results = api.getLyrics().search(args[2]).setLimit(1).execute();
+			if(results.isEmpty()) {
+				throw new NotFoundException("");
+			}
 		}
 		catch(NotFoundException e){
 			channel.sendMessage("No results for query `" + args[2] + "`").queue();
