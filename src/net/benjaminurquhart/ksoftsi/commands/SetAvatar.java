@@ -35,5 +35,8 @@ public class SetAvatar extends Command{
 			channel.sendMessage(e.toString()).queue();
 		}
 	}
-
+	@Override
+	public boolean hide(){
+		return true;
+	}
 }

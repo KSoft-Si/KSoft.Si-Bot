@@ -10,10 +10,6 @@ import net.explodingbush.ksoftapi.entities.Wikihow;
 
 public class WikiHow extends Command {
 
-	public WikiHow() {
-		super("wikihow");
-	}
-
 	@Override
 	public void handle(GuildMessageReceivedEvent event, KSoftSi self) {
 		TextChannel channel = event.getChannel();
@@ -23,6 +19,11 @@ public class WikiHow extends Command {
 		eb.setTitle(wikihow.getTitle());
 		eb.setDescription(wikihow.getArticleUrl());
 		channel.sendMessage(eb.build()).queue();
+	}
+
+	@Override
+	public String getDescription() {
+		return "gets a random wikihow";
 	}
 
 }

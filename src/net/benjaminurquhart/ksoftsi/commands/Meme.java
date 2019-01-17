@@ -11,10 +11,6 @@ import net.explodingbush.ksoftapi.enums.ImageType;
 
 public class Meme extends Command {
 
-	public Meme() {
-		super("meme");
-	}
-
 	@Override
 	public void handle(GuildMessageReceivedEvent event, KSoftSi self) {
 		TextChannel channel = event.getChannel();
@@ -22,6 +18,11 @@ public class Meme extends Command {
 		Reddit image = api.getRedditImage(ImageType.RANDOM_MEME).execute();
 		EmbedBuilder eb = EmbedUtils.getEmbed(event.getGuild(), image.getImageUrl(), image.getSubreddit(), event.getAuthor());
 		channel.sendMessage(eb.build()).queue();
+	}
+
+	@Override
+	public String getDescription() {
+		return "gets a random meme";
 	}
 	
 }
